@@ -2,7 +2,7 @@
 
 ## Context
 
-Building a portfolio-quality web app for job seeking. The app is a Leave / Time-off Request Approval Workflow with multi-level sequential approval chains. It demonstrates real-world patterns: role-based access control, multi-step state machines, SPA + API architecture. Designed to be extensible into a generic workflow engine in the future.
+Building a portfolio-quality web app. The app is a Leave / Time-off Request Approval Workflow with multi-level sequential approval chains. It demonstrates real-world patterns: role-based access control, multi-step state machines, SPA + API architecture. Designed to be extensible into a generic workflow engine in the future.
 
 **Timeline**: 7 days to working, deployed MVP  
 **Deploy targets**: Vercel (React) + Railway (Laravel + PostgreSQL)  
