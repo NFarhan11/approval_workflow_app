@@ -47,4 +47,20 @@ class LeaveRequestPolicy
         return $user->id === $leaveRequest->requester_id
             && $leaveRequest->status === 'pending';
     }
+
+    // Can approve or reject a leave request?
+    public function approve(User $user, LeaveRequest $leaveRequest): bool
+    {
+        // Request must still be active
+        if (!in_array($leaveRequest->status, ['pending', 'in_progress'])) {
+            return false;
+        }
+
+        // User must be the approver for the current active step
+        return $leaveRequest->approvalSteps()
+                            ->where('step_number', $leaveRequest->current_step)
+                            ->where('approver_id', $user->id)
+                            ->where('status', 'pending')
+                            ->exists();
+    }
 }
