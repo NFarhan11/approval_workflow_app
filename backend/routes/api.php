@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\ApprovalController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\LeaveRequestController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,8 +20,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/me',     [AuthController::class, 'me']);
     });
 
+    // Dashboard
+    Route::get('/dashboard/stats', [DashboardController::class, 'stats']);
+
     // Admin
-    Route::get('/admin/approvers', [AdminController::class, 'approvers']);
+    Route::get('/admin/approvers',           [AdminController::class, 'approvers']);
+    Route::get('/admin/users',               [AdminController::class, 'users']);
+    Route::patch('/admin/users/{user}/role', [AdminController::class, 'updateRole']);
 
     // Leave Requests
     Route::get('/leave-requests',          [LeaveRequestController::class, 'index']);
