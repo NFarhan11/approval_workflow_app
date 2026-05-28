@@ -7,6 +7,7 @@ import RequestListPage from '@/pages/requests/RequestListPage'
 import RequestCreatePage from '@/pages/requests/RequestCreatePage'
 import RequestDetailPage from '@/pages/requests/RequestDetailPage'
 import DashboardPage from '@/pages/dashboard/DashboardPage'
+import UserManagementPage from '@/pages/admin/UserManagementPage'
 
 // Redirects to /login if not authenticated
 function ProtectedRoute() {
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
             { path: '/requests',         element: <RequestListPage /> },
             { path: '/requests/new',     element: <RequestCreatePage /> },
             { path: '/requests/:id',     element: <RequestDetailPage /> },
+            { path: '/admin/users',      element: <UserManagementPage /> },
         ],
     },
 
