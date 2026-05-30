@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { flushSync } from 'react-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -29,7 +28,7 @@ export default function LoginPage() {
         setServerError(null)
         try {
             const res = await api.post('/auth/login', data)
-            flushSync(() => login(res.data.user, res.data.token))
+            login(res.data.user, res.data.token)
             navigate('/dashboard')
         } catch (err) {
             setServerError(err.response?.data?.message ?? 'Invalid credentials. Please try again.')
