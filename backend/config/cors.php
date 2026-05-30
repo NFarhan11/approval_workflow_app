@@ -19,10 +19,11 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => array_filter([
+    'allowed_origins' => [
         'http://localhost:5173',
-        env('FRONTEND_URL'),
-    ]),
+        'http://localhost:3000',
+        'https://frontend-production-f1cc.up.railway.app',
+    ],
 
     'allowed_origins_patterns' => [],
 
