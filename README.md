@@ -4,6 +4,14 @@ A full-stack web app implementing a multi-level leave request approval system wi
 
 **Live demo:** https://frontend-production-f1cc.up.railway.app
 
+## Test Accounts
+
+| Role | Email | Password | Name |
+|---|---|---| --- |
+| Admin | admin@example.com | password | Admin User |
+| Approver (L1) | approver1@example.com | password | Alice Approver |
+| Approver (L2) | approver2@example.com | password | Bob Approver |
+| Requester | requester1@example.com | password | Charlie Requester |
 ---
 
 ## Tech Stack
@@ -126,14 +134,3 @@ approval_workflow_app/
         ├── store/authStore.js
         └── router/
 ```
-
----
-
-## Test Accounts
-
-| Role | Email | Password |
-|---|---|---|
-| Admin | admin@example.com | password |
-| Approver (L1) | approver1@example.com | password |
-| Approver (L2) | approver2@example.com | password |
-| Requester | requester1@example.com | password |
