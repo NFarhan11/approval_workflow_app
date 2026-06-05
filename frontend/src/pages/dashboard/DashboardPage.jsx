@@ -34,7 +34,7 @@ export default function DashboardPage() {
     }
 
     return (
-        <div className="p-8 max-w-5xl mx-auto">
+        <div className="max-w-5xl mx-auto">
             <div className="flex items-center justify-between mb-8">
                 <div>
                     <h1 className="text-2xl font-bold">Dashboard</h1>
@@ -46,12 +46,6 @@ export default function DashboardPage() {
                             <Link to="/requests/new">+ New Request</Link>
                         </Button>
                     )}
-                    {user?.role === 'admin' && (
-                        <Button variant="outline" asChild>
-                            <Link to="/admin/users">Manage Users</Link>
-                        </Button>
-                    )}
-                    <Button variant="outline" onClick={handleLogout}>Logout</Button>
                 </div>
             </div>
 
