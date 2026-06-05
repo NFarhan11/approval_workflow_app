@@ -81,7 +81,7 @@ export default function AppLayout() {
         <SidebarFooter className="p-4">
           <p className="text-sm font-medium">{user?.name}</p>
           <p className="text-xs text-muted-foreground capitalize mb-2">{user?.role}</p>
-          <Button variant="outline" size="sm" className="w-full" onClick={handleLogout}>
+          <Button variant="outline" size="sm" className="w-full cursor-pointer" onClick={handleLogout}>
             <LogOut className="size-4" />
             Logout
           </Button>
