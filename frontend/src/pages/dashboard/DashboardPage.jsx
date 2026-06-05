@@ -82,11 +82,6 @@ export default function DashboardPage() {
                 </div>
             )}
 
-            <div className="flex gap-3">
-                <Button asChild variant="outline">
-                    <Link to="/requests">View All Requests</Link>
-                </Button>
-            </div>
         </div>
     )
 }
