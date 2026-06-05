@@ -5,6 +5,7 @@ import {
   PlusCircle,
   Users,
   LogOut,
+  CalendarDays,
 } from 'lucide-react'
 import useAuthStore from '@/store/authStore'
 import api from '@/services/api'
@@ -56,13 +57,27 @@ export default function AppLayout() {
   return (
     <SidebarProvider>
       <Sidebar>
-        <SidebarHeader className="p-4">
-          <p className="font-semibold">Leave Workflow</p>
+        <SidebarHeader className="relative overflow-hidden p-4">
+          <div
+            className="pointer-events-none absolute -right-12 -top-12 size-40 rounded-full bg-sidebar-primary-foreground/10"
+            aria-hidden
+          />
+          <div className="relative">
+            <div className="mb-3 flex size-10 items-center justify-center rounded-2xl bg-sidebar-primary-foreground/15 ring-1 ring-sidebar-primary-foreground/20">
+              <CalendarDays className="size-5" />
+            </div>
+            <p className="font-semibold tracking-tight">Leave Workflow</p>
+            <p className="mt-1 text-xs text-sidebar-foreground/85">
+              Request and approve leave in one place.
+            </p>
+          </div>
         </SidebarHeader>
 
         <SidebarContent>
           <SidebarGroup>
-            <SidebarGroupLabel>Menu</SidebarGroupLabel>
+            <SidebarGroupLabel className="text-sidebar-foreground/70">
+              Menu
+            </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 <NavItem to="/dashboard" icon={LayoutDashboard} label="Dashboard" />
@@ -80,15 +95,20 @@ export default function AppLayout() {
 
         <SidebarFooter className="p-4">
           <p className="text-sm font-medium">{user?.name}</p>
-          <p className="text-xs text-muted-foreground capitalize mb-2">{user?.role}</p>
-          <Button variant="outline" size="sm" className="w-full cursor-pointer" onClick={handleLogout}>
+          <p className="mb-2 text-xs capitalize text-sidebar-foreground/70">{user?.role}</p>
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full cursor-pointer border-sidebar-border bg-transparent text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+            onClick={handleLogout}
+          >
             <LogOut className="size-4" />
             Logout
           </Button>
         </SidebarFooter>
       </Sidebar>
 
-      <SidebarInset>
+      <SidebarInset className="bg-linear-to-br from-primary/8 via-background to-muted/40">
         <header className="flex h-12 items-center gap-2 border-b px-4 md:hidden">
           <SidebarTrigger />
         </header>
