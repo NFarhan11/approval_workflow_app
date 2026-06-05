@@ -5,9 +5,9 @@ import { z } from 'zod'
 import { useNavigate, Link } from 'react-router-dom'
 import api from '@/services/api'
 import useAuthStore from '@/store/authStore'
+import AuthLayout from '@/components/layout/AuthLayout'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 
 const schema = z.object({
@@ -36,59 +36,53 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
-            <Card className="w-full max-w-md">
-                <CardHeader className="text-center">
-                    <CardTitle className="text-2xl">Welcome back</CardTitle>
-                    <CardDescription>Sign in to your account</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <AuthLayout title="Welcome back" description="Sign in to your account">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <div className="space-y-1">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                        id="email"
+                        type="email"
+                        placeholder="you@example.com"
+                        autoComplete="email"
+                        {...register('email')}
+                    />
+                    {errors.email && (
+                        <p className="text-sm text-destructive">{errors.email.message}</p>
+                    )}
+                </div>
 
-                        <div className="space-y-1">
-                            <Label htmlFor="email">Email</Label>
-                            <Input
-                                id="email"
-                                type="email"
-                                placeholder="you@example.com"
-                                {...register('email')}
-                            />
-                            {errors.email && (
-                                <p className="text-sm text-red-500">{errors.email.message}</p>
-                            )}
-                        </div>
+                <div className="space-y-1">
+                    <Label htmlFor="password">Password</Label>
+                    <Input
+                        id="password"
+                        type="password"
+                        placeholder="••••••••"
+                        autoComplete="current-password"
+                        {...register('password')}
+                    />
+                    {errors.password && (
+                        <p className="text-sm text-destructive">{errors.password.message}</p>
+                    )}
+                </div>
 
-                        <div className="space-y-1">
-                            <Label htmlFor="password">Password</Label>
-                            <Input
-                                id="password"
-                                type="password"
-                                placeholder="••••••••"
-                                {...register('password')}
-                            />
-                            {errors.password && (
-                                <p className="text-sm text-red-500">{errors.password.message}</p>
-                            )}
-                        </div>
+                {serverError && (
+                    <p className="rounded-lg bg-destructive/10 px-3 py-2 text-center text-sm text-destructive">
+                        {serverError}
+                    </p>
+                )}
 
-                        {serverError && (
-                            <p className="text-sm text-red-500 text-center">{serverError}</p>
-                        )}
+                <Button type="submit" className="w-full cursor-pointer" disabled={isSubmitting}>
+                    {isSubmitting ? 'Signing in...' : 'Sign in'}
+                </Button>
 
-                        <Button type="submit" className="w-full" disabled={isSubmitting}>
-                            {isSubmitting ? 'Signing in...' : 'Sign in'}
-                        </Button>
-
-                        <p className="text-sm text-center text-gray-500">
-                            Don't have an account?{' '}
-                            <Link to="/register" className="text-primary underline">
-                                Register
-                            </Link>
-                        </p>
-
-                    </form>
-                </CardContent>
-            </Card>
-        </div>
+                <p className="text-center text-sm text-muted-foreground">
+                    Don&apos;t have an account?{' '}
+                    <Link to="/register" className="font-medium text-primary underline-offset-4 hover:underline">
+                        Register
+                    </Link>
+                </p>
+            </form>
+        </AuthLayout>
     )
 }
