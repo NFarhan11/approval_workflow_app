@@ -51,7 +51,7 @@ export default function AuthLayout({ title, description, children }) {
                     <p className="mt-1 text-sm text-muted-foreground">Leave request approvals</p>
                 </div>
 
-                <Card className="w-full max-w-md border-border/60 shadow-xl">
+                <Card className="w-full max-w-md border-2 border-border shadow-xl">
                     <CardHeader className="space-y-1 pb-4 text-center">
                         <CardTitle className="text-2xl">{title}</CardTitle>
                         <CardDescription>{description}</CardDescription>
