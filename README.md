@@ -6,12 +6,12 @@ A full-stack web app implementing a multi-level leave request approval system wi
 
 ## Test Accounts
 
-| Role | Email | Password | Name |
+| Role | Email |  Name |
 |---|---|---| --- |
-| Admin | admin@example.com | password | Admin User |
-| Approver (L1) | approver1@example.com | password | Alice Approver |
-| Approver (L2) | approver2@example.com | password | Bob Approver |
-| Requester | requester1@example.com | password | Charlie Requester |
+| Admin | admin@example.com |  Admin User |
+| Approver (L1) | approver1@example.com |  Alice Approver |
+| Approver (L2) | approver2@example.com |  Bob Approver |
+| Requester | requester1@example.com |  Charlie Requester |
 ---
 
 ## Tech Stack
