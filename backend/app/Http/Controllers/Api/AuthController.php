@@ -26,7 +26,7 @@ class AuthController extends Controller
             'department' => $validated['department'] ?? null,
         ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $token = $user->createToken('auth_token', ['*'], now()->addMinutes(10))->plainTextToken;
 
         return response()->json([
             'user'  => $user,
@@ -49,7 +49,7 @@ class AuthController extends Controller
             ]);
         }
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $token = $user->createToken('auth_token', ['*'], now()->addMinutes(10))->plainTextToken;
 
         return response()->json([
             'user'  => $user,
