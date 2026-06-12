@@ -8,16 +8,21 @@ import api from '@/services/api'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
+
+const today = () => new Date().toISOString().split('T')[0]
 
 const schema = z.object({
     leave_type:   z.string().min(1, 'Please select a leave type'),
-    start_date:   z.string().min(1, 'Start date is required'),
+    start_date:   z.string().min(1, 'Start date is required').refine((val)=> val >= today(), 'Start date must be today or later'),
     end_date:     z.string().min(1, 'End date is required'),
     reason:       z.string().min(10, 'Please provide at least 10 characters'),
     approver_ids: z.array(z.string()).min(1, 'Please select at least one approver'),
-})
+}).refine(
+    (data) => data.end_date >= data.start_date, 
+    {error: 'End date must be on or after start date', path: ['end_date']}
+)
 
 export default function RequestCreatePage() {
     const navigate = useNavigate()
