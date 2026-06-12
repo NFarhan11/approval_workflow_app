@@ -20,7 +20,7 @@ A full-stack web app implementing a multi-level leave request approval system wi
 |---|---|
 | Frontend | React 18 (Vite), TailwindCSS, shadcn/ui |
 | State management | Zustand (auth), TanStack Query (server state) |
-| Backend | Laravel 12, Laravel Sanctum (API token auth) |
+| Backend | Laravel 13, Laravel Sanctum (API token auth) |
 | Database | PostgreSQL |
 | HTTP client | Axios with request/response interceptors |
 | Deployment | Railway (backend + DB + frontend, all in one platform) |
@@ -109,7 +109,7 @@ All routes are protected by `sanctum:auth` middleware.
 
 ```
 approval_workflow_app/
-├── backend/                  # Laravel 12
+├── backend/                  # Laravel 13
 │   ├── app/
 │   │   ├── Models/           # User, LeaveRequest, ApprovalStep
 │   │   ├── Policies/         # LeaveRequestPolicy
