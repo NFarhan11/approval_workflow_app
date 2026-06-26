@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\LeaveRequest;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -14,10 +15,10 @@ class RequestCreated extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct(
+        public LeaveRequest $leaveRequest
+        )
+    {}
 
     /**
      * Get the notification's delivery channels.
@@ -35,9 +36,10 @@ class RequestCreated extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->line('The introduction to the notification.')
-            ->action('Notification Action', url('/'))
-            ->line('Thank you for using our application!');
+            ->greeting('Konnichiwa!')
+            ->line('You have a leave request to be approve. You can monitor your approval progress at the request index page.')
+            ->action('Request Index', url('/leave-requests'))
+            ->line('Thank you!');
     }
 
     /**

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\LeaveRequestResource;
 use App\Models\ApprovalStep;
 use App\Models\LeaveRequest;
+use App\Models\User;
+use App\Notifications\RequestCreated;
 use Illuminate\Http\Request;
 
 class LeaveRequestController extends Controller
@@ -71,6 +73,10 @@ class LeaveRequestController extends Controller
                 'step_number'      => $index + 1,
                 'status'           => 'pending',
             ]);
+
+            $user = User::find($approverId);
+
+            $user->notify(new RequestCreated($leaveRequest));
         }
 
         $leaveRequest->load(['requester', 'approvalSteps.approver']);
