@@ -74,9 +74,9 @@ class LeaveRequestController extends Controller
                 'status'           => 'pending',
             ]);
 
-            $user = User::find($approverId);
+            $approver = User::find($approverId);
 
-            $user->notify(new RequestCreated($leaveRequest));
+            $approver->notify(new RequestCreated($leaveRequest));
         }
 
         $leaveRequest->load(['requester', 'approvalSteps.approver']);

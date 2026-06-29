@@ -38,7 +38,7 @@ class RequestCreated extends Notification
         return (new MailMessage)
             ->greeting('Konnichiwa!')
             ->line('You have a leave request to be approve. You can monitor your approval progress at the request index page.')
-            ->action('Request Index', url('/leave-requests'))
+            ->action('Request Index', rtrim(env('FRONTEND_URL'), '/') . '/requests/' . $this->leaveRequest->id)
             ->line('Thank you!');
     }
 
