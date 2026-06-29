@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class RequestCreated extends Notification
+class RequestApproved extends Notification
 {
     use Queueable;
 
@@ -17,8 +17,10 @@ class RequestCreated extends Notification
      */
     public function __construct(
         public LeaveRequest $leaveRequest
-        )
-    {}
+    )
+    {
+        //
+    }
 
     /**
      * Get the notification's delivery channels.
@@ -37,8 +39,8 @@ class RequestCreated extends Notification
     {
         return (new MailMessage)
             ->greeting('Konnichiwa!')
-            ->line('You have a leave request to be approve. You can monitor your approval progress at the request index page.')
-            ->action('Request To Approve', rtrim(env('FRONTEND_URL'), '/') . '/requests/' . $this->leaveRequest->id)
+            ->line('Your leave request has been approved. You can monitor your approval progress at the below url.')
+            ->action('Approved Request', rtrim(env('FRONTEND_URL'), '/') . '/requests/' . $this->leaveRequest->id)
             ->line('Thank you!');
     }
 

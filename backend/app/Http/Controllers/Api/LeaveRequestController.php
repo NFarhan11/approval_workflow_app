@@ -74,8 +74,8 @@ class LeaveRequestController extends Controller
                 'status'           => 'pending',
             ]);
 
+            // Email notification
             $approver = User::find($approverId);
-
             $approver->notify(new RequestCreated($leaveRequest));
         }
 

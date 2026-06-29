@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\LeaveRequestResource;
 use App\Models\LeaveRequest;
+use App\Notifications\RequestApproved;
 use Illuminate\Http\Request;
 
 class ApprovalController extends Controller
@@ -32,6 +33,10 @@ class ApprovalController extends Controller
         if ($leaveRequest->current_step === $leaveRequest->total_steps) {
             // Last step — fully approved
             $leaveRequest->update(['status' => 'approved']);
+
+            // Email notification
+            $requester = $leaveRequest->requester;
+            $requester->notify(new RequestApproved($leaveRequest));
         } else {
             // Advance to next step
             $leaveRequest->update([
