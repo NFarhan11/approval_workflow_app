@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\LeaveRequestResource;
 use App\Models\LeaveRequest;
 use App\Notifications\RequestApproved;
+use App\Notifications\RequestRejected;
 use Illuminate\Http\Request;
 
 class ApprovalController extends Controller
@@ -74,6 +75,10 @@ class ApprovalController extends Controller
         $leaveRequest->update(['status' => 'rejected']);
 
         $leaveRequest->load(['requester', 'approvalSteps.approver']);
+
+        // Email notification
+        $requester = $leaveRequest->requester;
+        $requester->notify(new RequestRejected($leaveRequest));
 
         return new LeaveRequestResource($leaveRequest);
     }
