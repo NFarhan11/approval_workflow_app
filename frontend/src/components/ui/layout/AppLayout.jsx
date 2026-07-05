@@ -6,6 +6,8 @@ import {
   Users,
   LogOut,
   CalendarDays,
+  Settings,
+  CalendarClock,
 } from 'lucide-react'
 import useAuthStore from '@/store/authStore'
 import api from '@/services/api'
@@ -86,7 +88,11 @@ export default function AppLayout() {
                   <NavItem to="/requests/new" icon={PlusCircle} label="New Request" />
                 )}
                 {user?.role === 'admin' && (
-                  <NavItem to="/admin/users" icon={Users} label="Users" />
+                  <>
+                    <NavItem to="/admin/users" icon={Users} label="Users" />
+                    <NavItem to="/admin/leave-types" icon={Settings} label="Leave Types" />
+                    <NavItem to="/admin/holidays" icon={CalendarClock} label="Holidays" />
+                  </>
                 )}
               </SidebarMenu>
             </SidebarGroupContent>
