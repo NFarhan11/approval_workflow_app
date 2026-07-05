@@ -6,31 +6,41 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\LeaveRequestResource;
 use App\Models\ApprovalStep;
 use App\Models\LeaveRequest;
+use App\Models\LeaveType;
 use App\Models\User;
 use App\Notifications\RequestCreated;
+use App\Services\LeaveBalanceService;
+use App\Services\WorkingDaysCalculator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class LeaveRequestController extends Controller
 {
+    public function __construct(
+        private WorkingDaysCalculator $workingDays,
+        private LeaveBalanceService $balances,
+    ) {
+    }
+
     // GET /api/leave-requests
     public function index(Request $request)
     {
         $user = $request->user();
 
         $requests = match ($user->role) {
-            'requester' => LeaveRequest::with(['requester', 'approvalSteps.approver'])
+            'requester' => LeaveRequest::with(['requester', 'leaveType', 'approvalSteps.approver'])
                                        ->where('requester_id', $user->id)
                                        ->latest()
                                        ->get(),
 
-            'approver'  => LeaveRequest::with(['requester', 'approvalSteps.approver'])
+            'approver'  => LeaveRequest::with(['requester', 'leaveType', 'approvalSteps.approver'])
                                        ->whereHas('approvalSteps', fn ($q) =>
                                            $q->where('approver_id', $user->id)
                                        )
                                        ->latest()
                                        ->get(),
 
-            'admin'     => LeaveRequest::with(['requester', 'approvalSteps.approver'])
+            'admin'     => LeaveRequest::with(['requester', 'leaveType', 'approvalSteps.approver'])
                                        ->latest()
                                        ->get(),
         };
@@ -44,7 +54,7 @@ class LeaveRequestController extends Controller
         $this->authorize('create', LeaveRequest::class);
 
         $validated = $request->validate([
-            'leave_type'     => 'required|in:annual,sick,emergency,unpaid',
+            'leave_type_id'  => 'required|exists:leave_types,id',
             'start_date'     => 'required|date|after_or_equal:today',
             'end_date'       => 'required|date|after_or_equal:start_date',
             'reason'         => 'required|string|max:1000',
@@ -52,17 +62,33 @@ class LeaveRequestController extends Controller
             'approver_ids.*' => 'exists:users,id',
         ]);
 
+        $leaveType = LeaveType::findOrFail($validated['leave_type_id']);
+        $startDate = Carbon::parse($validated['start_date']);
+        $endDate = Carbon::parse($validated['end_date']);
+        $totalDays = $this->workingDays->countBusinessDays($startDate, $endDate);
+
+        if ($leaveType->is_paid) {
+            $remaining = $this->balances->remainingDays($request->user(), $leaveType, $startDate->year);
+
+            if ($totalDays > $remaining) {
+                return response()->json([
+                    'message' => "Insufficient {$leaveType->name} balance. Remaining: {$remaining} day(s), requested: {$totalDays} day(s).",
+                ], 422);
+            }
+        }
+
         $totalSteps = count($validated['approver_ids']);
 
         $leaveRequest = LeaveRequest::create([
-            'requester_id' => $request->user()->id,
-            'leave_type'   => $validated['leave_type'],
-            'start_date'   => $validated['start_date'],
-            'end_date'     => $validated['end_date'],
-            'reason'       => $validated['reason'],
-            'status'       => 'pending',
-            'current_step' => 1,
-            'total_steps'  => $totalSteps,
+            'requester_id'  => $request->user()->id,
+            'leave_type_id' => $leaveType->id,
+            'start_date'    => $validated['start_date'],
+            'end_date'      => $validated['end_date'],
+            'total_days'    => $totalDays,
+            'reason'        => $validated['reason'],
+            'status'        => 'pending',
+            'current_step'  => 1,
+            'total_steps'   => $totalSteps,
         ]);
 
         // Pre-create all approval steps upfront
@@ -79,7 +105,7 @@ class LeaveRequestController extends Controller
             $approver->notify(new RequestCreated($leaveRequest));
         }
 
-        $leaveRequest->load(['requester', 'approvalSteps.approver']);
+        $leaveRequest->load(['requester', 'leaveType', 'approvalSteps.approver']);
 
         return new LeaveRequestResource($leaveRequest);
     }
@@ -89,7 +115,7 @@ class LeaveRequestController extends Controller
     {
         $this->authorize('view', $leaveRequest);
 
-        $leaveRequest->load(['requester', 'approvalSteps.approver']);
+        $leaveRequest->load(['requester', 'leaveType', 'approvalSteps.approver']);
 
         return new LeaveRequestResource($leaveRequest);
     }

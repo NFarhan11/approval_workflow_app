@@ -4,7 +4,10 @@ use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\ApprovalController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\HolidayController;
+use App\Http\Controllers\Api\LeaveBalanceController;
 use App\Http\Controllers\Api\LeaveRequestController;
+use App\Http\Controllers\Api\LeaveTypeController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes — no token needed
@@ -27,6 +30,20 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/admin/approvers',           [AdminController::class, 'approvers']);
     Route::get('/admin/users',               [AdminController::class, 'users']);
     Route::patch('/admin/users/{user}/role', [AdminController::class, 'updateRole']);
+
+    // Leave types, holidays, balances — readable by any authenticated user
+    Route::get('/leave-types',     [LeaveTypeController::class, 'index']);
+    Route::get('/holidays',        [HolidayController::class, 'index']);
+    Route::get('/leave-balances/me', [LeaveBalanceController::class, 'mine']);
+
+    // Admin-only management of leave policy
+    Route::middleware('admin')->group(function () {
+        Route::post('/admin/leave-types',              [LeaveTypeController::class, 'store']);
+        Route::patch('/admin/leave-types/{leaveType}',  [LeaveTypeController::class, 'update']);
+
+        Route::post('/admin/holidays',                  [HolidayController::class, 'store']);
+        Route::delete('/admin/holidays/{holiday}',      [HolidayController::class, 'destroy']);
+    });
 
     // Leave Requests
     Route::get('/leave-requests',          [LeaveRequestController::class, 'index']);
