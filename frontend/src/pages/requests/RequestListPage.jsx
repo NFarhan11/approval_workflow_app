@@ -58,7 +58,7 @@ export default function RequestListPage() {
                                             <p className="font-medium">{req.requester.name}</p>
                                             <p className="text-gray-400 text-xs">{req.requester.department}</p>
                                         </td>
-                                        <td className="px-4 py-3 capitalize">{req.leave_type}</td>
+                                        <td className="px-4 py-3">{req.leave_type.name}</td>
                                         <td className="px-4 py-3 text-gray-600">
                                             {req.start_date} → {req.end_date}
                                         </td>

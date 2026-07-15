@@ -69,7 +69,7 @@ export default function RequestDetailPage() {
                     ← Back to requests
                 </Link>
                 <div className="flex items-center justify-between mt-2">
-                    <h1 className="text-2xl font-bold capitalize">{request.leave_type} Leave</h1>
+                    <h1 className="text-2xl font-bold">{request.leave_type.name}</h1>
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${statusColors[request.status]}`}>
                         {request.status.replace('_', ' ')}
                     </span>
@@ -90,6 +90,7 @@ export default function RequestDetailPage() {
                     <div>
                         <p className="text-gray-500">Dates</p>
                         <p className="font-medium">{request.start_date} → {request.end_date}</p>
+                        <p className="text-gray-400 text-xs">{request.total_days} working day(s)</p>
                     </div>
                     <div className="col-span-2">
                         <p className="text-gray-500">Reason</p>

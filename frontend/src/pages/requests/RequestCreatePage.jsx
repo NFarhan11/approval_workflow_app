@@ -4,6 +4,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useQuery } from '@tanstack/react-query'
 import { useCreateLeaveRequest } from '@/hooks/useLeaveRequests'
+import { useLeaveTypes } from '@/hooks/useLeaveTypes'
+import { useLeaveBalances } from '@/hooks/useLeaveBalances'
 import api from '@/services/api'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,29 +16,35 @@ import { Textarea } from '@/components/ui/textarea'
 const today = () => new Date().toISOString().split('T')[0]
 
 const schema = z.object({
-    leave_type:   z.string().min(1, 'Please select a leave type'),
+    leave_type_id: z.string().min(1, 'Please select a leave type'),
     start_date:   z.string().min(1, 'Start date is required').refine((val)=> val >= today(), 'Start date must be today or later'),
     end_date:     z.string().min(1, 'End date is required'),
     reason:       z.string().min(10, 'Please provide at least 10 characters'),
     approver_ids: z.array(z.string()).min(1, 'Please select at least one approver'),
 }).refine(
-    (data) => data.end_date >= data.start_date, 
+    (data) => data.end_date >= data.start_date,
     {error: 'End date must be on or after start date', path: ['end_date']}
 )
 
 export default function RequestCreatePage() {
     const navigate = useNavigate()
-    const { mutate: createRequest, isPending } = useCreateLeaveRequest()
+    const { mutate: createRequest, isPending, error: submitError } = useCreateLeaveRequest()
+
+    const { data: leaveTypes } = useLeaveTypes()
+    const { data: balances } = useLeaveBalances()
 
     const { data: approvers } = useQuery({
         queryKey: ['approvers'],
         queryFn:  () => api.get('/admin/approvers').then(res => res.data.data),
     })
 
-    const { register, handleSubmit, formState: { errors } } = useForm({
+    const { register, handleSubmit, watch, formState: { errors } } = useForm({
         resolver: zodResolver(schema),
         defaultValues: { approver_ids: [] },
     })
+
+    const selectedLeaveTypeId = watch('leave_type_id')
+    const selectedBalance = balances?.find((b) => String(b.leave_type.id) === selectedLeaveTypeId)
 
     const onSubmit = (data) => {
         createRequest(data, {
@@ -59,20 +67,24 @@ export default function RequestCreatePage() {
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
 
                         <div className="space-y-1">
-                            <Label htmlFor="leave_type">Leave Type</Label>
+                            <Label htmlFor="leave_type_id">Leave Type</Label>
                             <select
-                                id="leave_type"
+                                id="leave_type_id"
                                 className="w-full border rounded-md px-3 py-2 text-sm"
-                                {...register('leave_type')}
+                                {...register('leave_type_id')}
                             >
                                 <option value="">Select a type...</option>
-                                <option value="annual">Annual</option>
-                                <option value="sick">Sick</option>
-                                <option value="emergency">Emergency</option>
-                                <option value="unpaid">Unpaid</option>
+                                {leaveTypes?.filter((lt) => lt.is_active).map((lt) => (
+                                    <option key={lt.id} value={String(lt.id)}>{lt.name}</option>
+                                ))}
                             </select>
-                            {errors.leave_type && (
-                                <p className="text-sm text-red-500">{errors.leave_type.message}</p>
+                            {errors.leave_type_id && (
+                                <p className="text-sm text-red-500">{errors.leave_type_id.message}</p>
+                            )}
+                            {selectedBalance && (
+                                <p className="text-xs text-gray-500">
+                                    Remaining balance: {selectedBalance.remaining} day(s)
+                                </p>
                             )}
                         </div>
 
@@ -126,6 +138,12 @@ export default function RequestCreatePage() {
                                 <p className="text-sm text-red-500">{errors.approver_ids.message}</p>
                             )}
                         </div>
+
+                        {submitError && (
+                            <p className="text-sm text-red-500">
+                                {submitError.response?.data?.message ?? 'Failed to submit request.'}
+                            </p>
+                        )}
 
                         <div className="flex gap-3 pt-2">
                             <Button type="submit" disabled={isPending}>

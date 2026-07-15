@@ -9,9 +9,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable([
     'requester_id',
-    'leave_type',
+    'leave_type_id',
     'start_date',
     'end_date',
+    'total_days',
     'reason',
     'status',
     'current_step',
@@ -31,6 +32,12 @@ class LeaveRequest extends Model
     public function requester(): BelongsTo
     {
         return $this->belongsTo(User::class, 'requester_id');
+    }
+
+    // The leave type this request was submitted under
+    public function leaveType(): BelongsTo
+    {
+        return $this->belongsTo(LeaveType::class);
     }
 
     // All approval steps in the chain

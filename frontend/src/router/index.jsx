@@ -8,6 +8,8 @@ import RequestCreatePage from '@/pages/requests/RequestCreatePage'
 import RequestDetailPage from '@/pages/requests/RequestDetailPage'
 import DashboardPage from '@/pages/dashboard/DashboardPage'
 import UserManagementPage from '@/pages/admin/UserManagementPage'
+import LeaveTypeSettingsPage from '@/pages/admin/LeaveTypeSettingsPage'
+import HolidayCalendarPage from '@/pages/admin/HolidayCalendarPage'
 import AppLayout from '@/components/ui/layout/AppLayout'
 
 // Redirects to /login if not authenticated
@@ -43,7 +45,9 @@ const router = createBrowserRouter([
                     { path: '/requests',         element: <RequestListPage /> },
                     { path: '/requests/new',     element: <RequestCreatePage /> },
                     { path: '/requests/:id',     element: <RequestDetailPage /> },
-                    { path: '/admin/users',      element: <UserManagementPage /> },
+                    { path: '/admin/users',       element: <UserManagementPage /> },
+                    { path: '/admin/leave-types', element: <LeaveTypeSettingsPage /> },
+                    { path: '/admin/holidays',    element: <HolidayCalendarPage /> },
                 ],
             },
             

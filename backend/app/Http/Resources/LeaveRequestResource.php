@@ -11,9 +11,14 @@ class LeaveRequestResource extends JsonResource
     {
         return [
             'id'           => $this->id,
-            'leave_type'   => $this->leave_type,
+            'leave_type'   => [
+                'id'   => $this->leaveType->id,
+                'name' => $this->leaveType->name,
+                'code' => $this->leaveType->code,
+            ],
             'start_date'   => $this->start_date->format('Y-m-d'),
             'end_date'     => $this->end_date->format('Y-m-d'),
+            'total_days'   => $this->total_days,
             'reason'       => $this->reason,
             'status'       => $this->status,
             'current_step' => $this->current_step,
